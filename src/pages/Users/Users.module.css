@@ -28,7 +28,6 @@
   padding: 3rem 0;
 }
 
-/* Pagination styles */
 .pagination {
   display: flex;
   justify-content: center;
@@ -73,7 +72,6 @@
   cursor: not-allowed;
 }
 
-/* Previous and Next buttons */
 .pagination li:first-child a,
 .pagination li:last-child a {
   font-size: 1.2rem;
@@ -119,7 +117,6 @@
   }
 }
 
-/* Transitions for page changes */
 @keyframes fadeChange {
   0% { opacity: 0.5; }
   100% { opacity: 1; }

@@ -21,7 +21,6 @@ const Users = () => {
 		if (error) {
 			return <div className={styles['error-message']}>Error: {error}</div>;
 		}
-	// Handle page change
 	const handlePageClick = ({ selected }) => {
 		const newPage = selected + 1;
 		if (newPage !== currentPage) {
@@ -29,7 +28,6 @@ const Users = () => {
 		}
 	};
 
-	// Calculate total pages
 	const pageCount = Math.ceil(totalUsersCount / pageSize);
 
 	const UserSkeletonLoader = () => (

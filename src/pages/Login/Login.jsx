@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { FaUser, FaLock, FaSignInAlt } from 'react-icons/fa';
-import { loginTC } from '../../store/reducers/authReducer/authThunk';
+import { loginTC } from '../../store/reducers/authReducers/authThunk';
 import styles from './Login.module.css';
 
 const LoginSchema = Yup.object().shape({

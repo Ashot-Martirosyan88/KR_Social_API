@@ -10,14 +10,25 @@ export const getUserProfileTC = userId => {
 	return async dispatch => {
 		try {
 			dispatch(setProfileLoadingAC(true));
-			const response = await API.getUserProfile(userId);
-			dispatch(setUserProfileAC(response.data));
+			dispatch(setProfileErrorAC(null));
 
-			// Also fetch user status
+			console.log('Fetching profile for user ID:', userId);
+			const response = await API.getUserProfile(userId);
+
+			if (response.data) {
+				dispatch(setUserProfileAC(response.data));
+				console.log('Profile data loaded:', response.data);
+			} else {
+				throw new Error('No profile data received');
+			}
+
 			dispatch(getUserStatusTC(userId));
+			return response.data; 
 		} catch (error) {
-			dispatch(setProfileErrorAC(error.message || 'Failed to fetch profile'));
+			const errorMessage = error.message || 'Failed to fetch profile';
+			dispatch(setProfileErrorAC(errorMessage));
 			console.error('Error fetching profile:', error);
+			throw error; 
 		} finally {
 			dispatch(setProfileLoadingAC(false));
 		}
@@ -28,7 +39,7 @@ export const getUserStatusTC = userId => {
 	return async dispatch => {
 		try {
 			const response = await API.getUserStatus(userId);
-			dispatch(setUserStatusAC(response.data));
+			dispatch(setUserStatusAC(response.data || ''));
 		} catch (error) {
 			console.error('Error fetching status:', error);
 		}
@@ -38,13 +49,19 @@ export const getUserStatusTC = userId => {
 export const updateUserStatusTC = status => {
 	return async dispatch => {
 		try {
+			dispatch(setProfileLoadingAC(true));
 			const response = await API.updateUserStatus(status);
+
 			if (response.data.resultCode === 0) {
 				dispatch(setUserStatusAC(status));
+			} else {
+				throw new Error(response.data.messages[0] || 'Failed to update status');
 			}
 		} catch (error) {
 			dispatch(setProfileErrorAC(error.message || 'Failed to update status'));
 			console.error('Error updating status:', error);
+		} finally {
+			dispatch(setProfileLoadingAC(false));
 		}
 	};
 };
@@ -54,11 +71,16 @@ export const updateUserPhotoTC = file => {
 		try {
 			dispatch(setProfileLoadingAC(true));
 			const response = await API.updateUserPhoto(file);
+
 			if (response.data.resultCode === 0) {
-				// Update profile with new photos
+				const currentProfile = await API.getUserProfile(
+					response.data.data.userId
+				);
+
 				dispatch(
 					setUserProfileAC({
-						...response.data.data,
+						...currentProfile.data,
+						photos: response.data.data.photos,
 					})
 				);
 			} else {

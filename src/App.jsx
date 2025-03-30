@@ -1,13 +1,19 @@
+import { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Layout from './components/Layout/Layout';
 import Users from './pages/Users/Users';
 import Login from './pages/Login/Login';
 import Profile from './pages/Profile/Profile';
-import NotFound from './pages/NotFound/NotFound';
+import NotFound from './components/NotFound/NotFound';
+import { checkAuthTC } from './store/reducers/authReducers/authThunk';
 
 const App = () => {
 	const { isAuthenticated } = useSelector(state => state.auth);
+	const dispatch = useDispatch();
+	useEffect(() => {
+		dispatch(checkAuthTC());
+	}, [dispatch]);
 
 	return (
 		<Routes>

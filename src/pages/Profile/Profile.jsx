@@ -1,26 +1,34 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaUser, FaEnvelope, FaMapMarkerAlt, FaEdit } from 'react-icons/fa';
-import { getUserProfileTC } from '../../store/reducers/profileReducer/profileThunk';
+import {
+	getUserProfileTC,
+	// getUserStatusTC,
+} from '../../store/reducers/profileReducers/profileThunk';
 import ContentLoader from 'react-content-loader';
 import styles from './Profile.module.css';
 
 const Profile = () => {
 	const dispatch = useDispatch();
-	const { user } = useSelector(state => state.auth);
+	const { user, isAuthenticated } = useSelector(state => state.auth);
 	const { profile, isLoading, error } = useSelector(state => state.profile);
+	const [isDataLoaded, setIsDataLoaded] = useState(false);
 
 	useEffect(() => {
-		if (user?.id) {
-			dispatch(getUserProfileTC(user.id));
+		if (isAuthenticated && user?.id) {
+			console.log('Fetching profile for user ID:', user.id);
+			dispatch(getUserProfileTC(user.id))
+				.then(() => {
+					setIsDataLoaded(true);
+				})
+				.catch(error => {
+					console.error('Error in profile component:', error);
+					setIsDataLoaded(true);
+				});
 		}
-	}, [dispatch, user]);
+	}, [dispatch, user, isAuthenticated]);
 
-	if (error) {
-		return <div className={styles.errorMessage}>Error: {error}</div>;
-	}
-
-	if (isLoading || !profile) {
+	if (isLoading || !isDataLoaded) {
 		return (
 			<div className={styles.loaderContainer}>
 				<ContentLoader
@@ -38,6 +46,18 @@ const Profile = () => {
 					<rect x='200' y='310' rx='8' ry='8' width='500' height='20' />
 					<rect x='200' y='350' rx='8' ry='8' width='450' height='20' />
 				</ContentLoader>
+			</div>
+		);
+	}
+
+	if (error) {
+		return <div className={styles.errorMessage}>Error: {error}</div>;
+	}
+
+	if (!profile) {
+		return (
+			<div className={styles.errorMessage}>
+				No profile data available. Please try again later.
 			</div>
 		);
 	}
@@ -69,10 +89,10 @@ const Profile = () => {
 					)}
 
 					<div className={styles.profileDetails}>
-						{profile.contacts?.email && (
+						{user?.email && (
 							<div className={styles.profileDetail}>
 								<FaEnvelope className={styles.detailIcon} />
-								<span>{profile.contacts.email}</span>
+								<span>{user.email}</span>
 							</div>
 						)}
 

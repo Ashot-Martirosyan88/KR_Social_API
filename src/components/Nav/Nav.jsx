@@ -1,8 +1,8 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { FaUsers, FaUserAlt, FaSignInAlt, FaSignOutAlt } from 'react-icons/fa';
-import { logoutTC } from '../../store/reducers/authReducer/authThunk';
-import styles from './Navbar.module.css';
+import { logoutTC } from '../../store/reducers/authReducers/authThunk';
+import styles from './Nav.module.css';
 
 const Nav = () => {
 	const { isAuthenticated, user } = useSelector(state => state.auth);
