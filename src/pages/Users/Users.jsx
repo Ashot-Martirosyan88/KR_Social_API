@@ -2,8 +2,9 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ReactPaginate from 'react-paginate';
 import { getUsersTC } from '../../store/reducers/usersReducers/usersThunk';
+import ContentLoader from 'react-content-loader';
 import User from '../../components/User/User';
-import './Users.css'; 
+import styles from './Users.module.css';
 
 const Users = () => {
 	const dispatch = useDispatch();
@@ -11,38 +12,70 @@ const Users = () => {
 		useSelector(state => state.usersData);
 
 	useEffect(() => {
-		dispatch(getUsersTC(currentPage, pageSize));
-	}, [dispatch, currentPage, pageSize]);
-
+		if (users.length === 0) {
+			dispatch(getUsersTC(currentPage, pageSize));
+		}
+	}, [dispatch, pageSize, users.length]);
+	
+	
+		if (error) {
+			return <div className={styles['error-message']}>Error: {error}</div>;
+		}
+	// Handle page change
 	const handlePageClick = ({ selected }) => {
-		dispatch(getUsersTC(selected + 1, pageSize));
+		const newPage = selected + 1;
+		if (newPage !== currentPage) {
+			dispatch(getUsersTC(newPage, pageSize));
+		}
 	};
 
+	// Calculate total pages
 	const pageCount = Math.ceil(totalUsersCount / pageSize);
 
-	if (error) {
-		return <div className='error-message'>Error: {error}</div>;
-	}
+	const UserSkeletonLoader = () => (
+		<div className={styles['users-list']}>
+			{Array.from({ length: pageSize }).map((_, index) => (
+				<ContentLoader
+					key={index}
+					speed={2}
+					width={280}
+					height={100}
+					viewBox='0 0 280 100'
+					backgroundColor='#f3f3f3'
+					foregroundColor='#ecebeb'
+					className={styles['user-item']}
+				>
+					{/* Circle for avatar */}
+					<circle cx='35' cy='50' r='35' />
+					{/* Rectangle for name */}
+					<rect x='80' y='30' rx='3' ry='3' width='140' height='15' />
+					{/* Rectangle for status */}
+					<rect x='80' y='55' rx='3' ry='3' width='100' height='10' />
+				</ContentLoader>
+			))}
+		</div>
+	);
 
 	return (
-		<div className='users-container'>
-			{isLoading ? (
-				<div className='loading'>Loading...</div>
-			) : (
-				<User users={users} />
-			)}
+		<div className={styles['users-container']}>
+			{isLoading ? <UserSkeletonLoader /> : <User users={users ?? []} />}
 
 			{totalUsersCount > 0 && (
 				<ReactPaginate
-					previousLabel={'←'}
-					nextLabel={'→'}
-					breakLabel={'...'}
+					previousLabel='←'
+					nextLabel='→'
+					breakLabel='...'
 					pageCount={pageCount}
 					marginPagesDisplayed={2}
 					pageRangeDisplayed={5}
 					onPageChange={handlePageClick}
-					containerClassName={'pagination'}
-					activeClassName={'active'}
+					containerClassName={styles.pagination}
+					activeClassName={styles.active}
+					breakClassName={styles['break-me']}
+					pageClassName={styles['page-item']}
+					previousClassName={styles['previous-button']}
+					nextClassName={styles['next-button']}
+					disabledClassName={styles.disabled}
 					forcePage={currentPage - 1}
 				/>
 			)}

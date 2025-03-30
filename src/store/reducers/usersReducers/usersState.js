@@ -3,6 +3,6 @@ export const initialState = {
 	isLoading: false,
 	currentPage: 1,
 	totalUsersCount: 0,
-	pageSize: 10,
+	pageSize: 50,
 	error: null,
 };

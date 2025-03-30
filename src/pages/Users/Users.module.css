@@ -1,0 +1,130 @@
+.users-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.error-message {
+  padding: 1.5rem;
+  margin: 2rem 0;
+  border-radius: 8px;
+  background-color: #fff5f5;
+  border-left: 4px solid #f56565;
+  color: #c53030;
+  font-size: 1rem;
+  animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes shake {
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-4px); }
+  40%, 60% { transform: translateX(4px); }
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: 3rem 0;
+}
+
+/* Pagination styles */
+.pagination {
+  display: flex;
+  justify-content: center;
+  list-style-type: none;
+  padding: 2rem 0 1rem;
+  margin: 0;
+  gap: 0.5rem;
+}
+
+.pagination li {
+  display: inline-flex;
+}
+
+.pagination li a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background-color: #f7f9fc;
+  color: #4a5568;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  user-select: none;
+}
+
+.pagination li a:hover {
+  background-color: #e2e8f0;
+  color: #2d3748;
+}
+
+.pagination li.active a {
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(37, 117, 252, 0.35);
+}
+
+.pagination li.disabled a {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Previous and Next buttons */
+.pagination li:first-child a,
+.pagination li:last-child a {
+  font-size: 1.2rem;
+  background-color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.pagination li:first-child a:hover,
+.pagination li:last-child a:hover {
+  background-color: #f7f9fc;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .pagination {
+    padding: 1.5rem 0;
+  }
+  
+  .pagination li a {
+    width: 35px;
+    height: 35px;
+  }
+  
+  .pagination li.break-me {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .pagination {
+    gap: 0.25rem;
+    flex-wrap: wrap;
+  }
+  
+  .pagination li a {
+    width: 32px;
+    height: 32px;
+    font-size: 0.9rem;
+  }
+  
+  .pagination li.page-range {
+    display: none;
+  }
+}
+
+/* Transitions for page changes */
+@keyframes fadeChange {
+  0% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+.user-container {
+  animation: fadeChange 0.3s ease-out;
+}
