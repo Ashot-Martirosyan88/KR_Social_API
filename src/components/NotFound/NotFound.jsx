@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import styles from './NotFound.module.css';
 
 const NotFound = () => {
@@ -10,9 +10,9 @@ const NotFound = () => {
 				The page you are looking for might have been removed or is temporarily
 				unavailable.
 			</p>
-			<Link to='/' className={styles.homeButton}>
+			<NavLink to='/' className={styles.homeButton}>
 				Go to Homepage
-			</Link>
+			</NavLink>
 		</div>
 	);
 };

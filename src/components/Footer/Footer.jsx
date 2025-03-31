@@ -14,7 +14,7 @@ const Footer = () => {
 					</p>
 					<div className={styles.socialLinks}>
 						<a
-							href='https://github.com'
+							href='https://github.com/Ashot-Martirosyan88/KR_Social_API'
 							target='_blank'
 							rel='noopener noreferrer'
 							className={styles.socialLink}

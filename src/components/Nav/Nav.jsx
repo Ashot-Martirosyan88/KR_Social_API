@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { FaUsers, FaUserAlt, FaSignInAlt, FaSignOutAlt } from 'react-icons/fa';
 import { logoutTC } from '../../store/reducers/authReducers/authThunk';
@@ -17,22 +17,22 @@ const Nav = () => {
 	return (
 		<nav className={styles.navbar}>
 			<div className={styles.container}>
-				<Link to='/' className={styles.logo}>
+				<NavLink to='/' className={styles.logo}>
 					SocialApp
-				</Link>
+				</NavLink>
 
 				<div className={styles.navLinks}>
-					<Link to='/users' className={styles.navLink}>
+					<NavLink to='/users' className={styles.navLink}>
 						<FaUsers className={styles.icon} />
 						<span>Users</span>
-					</Link>
+					</NavLink>
 
 					{isAuthenticated ? (
 						<>
-							<Link to='/profile' className={styles.navLink}>
+							<NavLink to='/profile' className={styles.navLink}>
 								<FaUserAlt className={styles.icon} />
 								<span>Profile</span>
-							</Link>
+							</NavLink>
 							<button onClick={handleLogout} className={styles.navButton}>
 								<FaSignOutAlt className={styles.icon} />
 								<span>Logout</span>
@@ -44,10 +44,10 @@ const Nav = () => {
 							)}
 						</>
 					) : (
-						<Link to='/login' className={styles.navLink}>
+						<NavLink to='/login' className={styles.navLink}>
 							<FaSignInAlt className={styles.icon} />
 							<span>Login</span>
-						</Link>
+						</NavLink>
 					)}
 				</div>
 			</div>
