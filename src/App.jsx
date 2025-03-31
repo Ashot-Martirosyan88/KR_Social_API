@@ -22,7 +22,7 @@ const App = () => {
 				<Route path='users' element={<Users />} />
 				<Route path='login' element={<Login />} />
 				<Route
-					path='profile'
+					path='/profile'
 					element={
 						isAuthenticated ? <Profile /> : <Navigate to='/login' replace />
 					}

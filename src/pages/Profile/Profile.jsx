@@ -1,10 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaUser, FaEnvelope, FaMapMarkerAlt, FaEdit } from 'react-icons/fa';
-import {
-	getUserProfileTC,
-	// getUserStatusTC,
-} from '../../store/reducers/profileReducers/profileThunk';
+import { getUserProfileTC } from '../../store/reducers/profileReducers/profileThunk';
 import ContentLoader from 'react-content-loader';
 import styles from './Profile.module.css';
 
