@@ -1,143 +1,198 @@
 import { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { FaUser, FaEnvelope, FaMapMarkerAlt, FaEdit } from 'react-icons/fa';
-import { getUserProfileTC } from '../../store/reducers/profileReducers/profileThunk';
-import ContentLoader from 'react-content-loader';
+import { FaUser, FaEdit } from 'react-icons/fa';
+import API from '../../api/api';
+import {
+	setUserProfileAC,
+	setProfileLoadingAC,
+	setProfileErrorAC,
+} from '../../store/reducers/profileReducers/profileActionCreator';
+import {
+	getUserStatusTC,
+	updateUserStatusTC,
+} from '../../store/reducers/profileReducers/profileThunk';
 import styles from './Profile.module.css';
 
 const Profile = () => {
+	const { userId: paramUserId } = useParams();
+	const navigate = useNavigate();
 	const dispatch = useDispatch();
+	const { profile, status, isLoading, error } = useSelector(
+		state => state.profile
+	);
 	const { user, isAuthenticated } = useSelector(state => state.auth);
-	const { profile, isLoading, error } = useSelector(state => state.profile);
-	const [isDataLoaded, setIsDataLoaded] = useState(false);
+
+	const [statusText, setStatusText] = useState('');
+	const [isEditingStatus, setIsEditingStatus] = useState(false);
+
+	const userId = paramUserId || (user && user.id);
+	const isOwnProfile = user && userId === user.id;
 
 	useEffect(() => {
-		if (isAuthenticated && user?.id) {
-			console.log('Fetching profile for user ID:', user.id);
-			dispatch(getUserProfileTC(user.id))
-				.then(() => {
-					setIsDataLoaded(true);
-				})
-				.catch(error => {
-					console.error('Error in profile component:', error);
-					setIsDataLoaded(true);
-				});
+		if (!userId) {
+			if (isAuthenticated) {
+				navigate('/profile');
+			} else {
+				navigate('/login');
+			}
+			return;
 		}
-	}, [dispatch, user, isAuthenticated]);
 
-	if (isLoading || !isDataLoaded) {
-		return (
-			<div className={styles.loaderContainer}>
-				<ContentLoader
-					speed={2}
-					width={800}
-					height={400}
-					viewBox='0 0 800 400'
-					backgroundColor='#f3f3f3'
-					foregroundColor='#ecebeb'
-				>
-					<rect x='0' y='0' rx='16' ry='16' width='800' height='200' />
-					<circle cx='100' cy='250' r='70' />
-					<rect x='200' y='220' rx='8' ry='8' width='300' height='30' />
-					<rect x='200' y='270' rx='8' ry='8' width='400' height='20' />
-					<rect x='200' y='310' rx='8' ry='8' width='500' height='20' />
-					<rect x='200' y='350' rx='8' ry='8' width='450' height='20' />
-				</ContentLoader>
-			</div>
-		);
+		const fetchProfile = async () => {
+			try {
+				dispatch(setProfileLoadingAC(true));
+				const response = await API.getUserProfile(userId);
+				dispatch(setUserProfileAC(response.data));
+				dispatch(getUserStatusTC(userId));
+			} catch (error) {
+				dispatch(setProfileErrorAC(error.message || 'Failed to load profile'));
+				console.error('Error fetching profile:', error);
+			} finally {
+				dispatch(setProfileLoadingAC(false));
+			}
+		};
+
+		fetchProfile();
+	}, [userId, dispatch, navigate, isAuthenticated]);
+
+	useEffect(() => {
+		if (status) {
+			setStatusText(status);
+		}
+	}, [status]);
+
+	const handleEditProfile = () => {
+		navigate('/profile/edit');
+	};
+
+	const handleStatusClick = () => {
+		if (isOwnProfile) {
+			setIsEditingStatus(true);
+		}
+	};
+
+	const handleStatusChange = e => {
+		setStatusText(e.target.value);
+	};
+
+	const handleStatusSubmit = () => {
+		if (statusText !== status) {
+			dispatch(updateUserStatusTC(statusText));
+		}
+		setIsEditingStatus(false);
+	};
+
+	const handleStatusBlur = () => {
+		handleStatusSubmit();
+	};
+
+	const handleStatusKeyDown = e => {
+		if (e.key === 'Enter') {
+			handleStatusSubmit();
+		}
+	};
+
+	if (isLoading) {
+		return <div className={styles.loading}>Loading profile...</div>;
 	}
 
 	if (error) {
-		return <div className={styles.errorMessage}>Error: {error}</div>;
+		return <div className={styles.error}>{error}</div>;
 	}
 
 	if (!profile) {
-		return (
-			<div className={styles.errorMessage}>
-				No profile data available. Please try again later.
-			</div>
-		);
+		return <div className={styles.notFound}>Profile not found</div>;
 	}
 
 	return (
 		<div className={styles.profileContainer}>
 			<div className={styles.profileHeader}>
-				<div className={styles.coverImage}></div>
-				<div className={styles.profileAvatarContainer}>
-					<div className={styles.profileAvatar}>
-						{profile.photos?.large ? (
-							<img src={profile.photos.large} alt={profile.fullName} />
+				<div className={styles.profileAvatar}>
+					{profile.photos?.large ? (
+						<img src={profile.photos.large} alt={profile.fullName} />
+					) : (
+						<FaUser size={100} />
+					)}
+				</div>
+
+				<div className={styles.profileInfo}>
+					<h1 className={styles.profileName}>{profile.fullName}</h1>
+
+					<div className={styles.profileStatus} onClick={handleStatusClick}>
+						{isEditingStatus ? (
+							<input
+								type='text'
+								value={statusText}
+								onChange={handleStatusChange}
+								onBlur={handleStatusBlur}
+								onKeyDown={handleStatusKeyDown}
+								autoFocus
+								className={styles.statusInput}
+							/>
 						) : (
-							<FaUser size={60} />
+							<p>
+								{status || (isOwnProfile ? 'Click to add status' : 'No status')}
+							</p>
 						)}
 					</div>
-					<button className={styles.editButton}>
-						<FaEdit />
-						Edit Profile
-					</button>
+
+					{isOwnProfile && (
+						<button className={styles.editButton} onClick={handleEditProfile}>
+							<FaEdit /> Edit Profile
+						</button>
+					)}
 				</div>
 			</div>
 
-			<div className={styles.profileContent}>
-				<div className={styles.profileInfo}>
-					<h1 className={styles.profileName}>{profile.fullName}</h1>
-					{profile.aboutMe && (
-						<p className={styles.profileBio}>{profile.aboutMe}</p>
+			<div className={styles.profileDetails}>
+				<div className={styles.profileSection}>
+					<h2>About Me</h2>
+					<p>{profile.aboutMe || 'No information provided'}</p>
+				</div>
+
+				<div className={styles.profileSection}>
+					<h2>Job Status</h2>
+					<p>
+						<strong>Looking for a job: </strong>
+						{profile.lookingForAJob ? 'Yes' : 'No'}
+					</p>
+					{profile.lookingForAJob && profile.lookingForAJobDescription && (
+						<p>
+							<strong>Job Description: </strong>
+							{profile.lookingForAJobDescription}
+						</p>
 					)}
-
-					<div className={styles.profileDetails}>
-						{user?.email && (
-							<div className={styles.profileDetail}>
-								<FaEnvelope className={styles.detailIcon} />
-								<span>{user.email}</span>
-							</div>
-						)}
-
-						{profile.location?.city && (
-							<div className={styles.profileDetail}>
-								<FaMapMarkerAlt className={styles.detailIcon} />
-								<span>{`${profile.location.city}, ${profile.location.country}`}</span>
-							</div>
-						)}
-					</div>
 				</div>
 
 				<div className={styles.profileSection}>
-					<h2 className={styles.sectionTitle}>Looking for a job</h2>
-					<div className={styles.lookingForAJob}>
-						{profile.lookingForAJob ? (
-							<div className={styles.jobStatus}>
-								<span className={styles.available}>Available for work</span>
-								{profile.lookingForAJobDescription && (
-									<p>{profile.lookingForAJobDescription}</p>
-								)}
-							</div>
-						) : (
-							<span className={styles.notAvailable}>Not looking for work</span>
-						)}
-					</div>
-				</div>
-
-				<div className={styles.profileSection}>
-					<h2 className={styles.sectionTitle}>Social Media</h2>
-					<div className={styles.socialLinks}>
-						{Object.entries(profile.contacts || {}).map(([key, value]) => {
-							if (value && key !== 'email') {
-								return (
-									<a
-										key={key}
-										href={value.startsWith('http') ? value : `https://${value}`}
-										target='_blank'
-										rel='noopener noreferrer'
-										className={styles.socialLink}
-									>
-										{key}
-									</a>
-								);
-							}
-							return null;
-						})}
-					</div>
+					<h2>Contacts</h2>
+					{profile.contacts &&
+					Object.entries(profile.contacts).some(([value]) => value) ? (
+						<ul className={styles.contactsList}>
+							{Object.entries(profile.contacts).map(([key, value]) => {
+								if (value) {
+									return (
+										<li key={key} className={styles.contactItem}>
+											<strong>{key}: </strong>
+											<a
+												href={
+													value.startsWith('http') ? value : `https://${value}`
+												}
+												target='_blank'
+												rel='noreferrer'
+											>
+												{value}
+											</a>
+										</li>
+									);
+								}
+								return null;
+							})}
+						</ul>
+					) : (
+						<p>No contact information provided</p>
+					)}
 				</div>
 			</div>
 		</div>

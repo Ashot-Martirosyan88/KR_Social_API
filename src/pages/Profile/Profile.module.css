@@ -1,224 +1,183 @@
 .profileContainer {
-  max-width: 900px;
-  margin: 0 auto;
-  background-color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+	max-width: 900px;
+	margin: 0 auto;
+	padding: 1rem;
+	animation: fadeIn 0.8s ease;
 }
 
 .profileHeader {
-  position: relative;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 2rem;
+	margin-bottom: 2rem;
+	padding: 2rem;
+	background-color: #fff;
+	border-radius: 10px;
+	box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+	transition: transform 0.3s ease;
 }
 
-.coverImage {
-  height: 200px;
-  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-}
-
-.profileAvatarContainer {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  padding: 0 2rem;
-  transform: translateY(-40px);
-  margin-bottom: -20px;
+.profileHeader:hover {
+	transform: translateY(-5px);
 }
 
 .profileAvatar {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  overflow: hidden;
-  background-color: #f0f2f5;
-  border: 5px solid white;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #a0aec0;
+	width: 150px;
+	height: 150px;
+	flex-shrink: 0;
+	border-radius: 50%;
+	overflow: hidden;
+	border: 3px solid #4a76a8;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: #f5f5f5;
+	transition: all 0.3s ease;
+}
+
+.profileAvatar:hover {
+	border-color: #2a5885;
+	transform: scale(1.05);
 }
 
 .profileAvatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.editButton {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background-color: #f7f9fc;
-  color: #4a5568;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-}
-
-.editButton:hover {
-  background-color: #e2e8f0;
-  transform: translateY(-2px);
-}
-
-.profileContent {
-  padding: 2rem;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
 }
 
 .profileInfo {
-  margin-bottom: 2rem;
+	flex: 1;
+	min-width: 200px;
 }
 
 .profileName {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #2d3748;
-  margin-bottom: 0.5rem;
+	font-size: 2rem;
+	margin: 0 0 0.5rem;
+	color: #333;
 }
 
-.profileBio {
-  color: #4a5568;
-  font-size: 1rem;
-  line-height: 1.6;
-  margin-bottom: 1.5rem;
+.profileStatus {
+	margin-bottom: 1.5rem;
+	padding: 0.5rem 0;
+	color: #666;
+	font-style: italic;
+	cursor: pointer;
+	transition: all 0.3s ease;
+}
+
+.profileStatus:hover {
+	color: #4a76a8;
+}
+
+.statusInput {
+	width: 100%;
+	padding: 0.5rem;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	font-size: 1rem;
+}
+
+.statusInput:focus {
+	outline: none;
+	border-color: #4a76a8;
+	box-shadow: 0 0 5px rgba(74, 118, 168, 0.5);
+}
+
+.editButton {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.75rem 1.5rem;
+	background-color: #4a76a8;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	font-weight: 500;
+	transition: all 0.3s ease;
+}
+
+.editButton:hover {
+	background-color: #2a5885;
+	transform: translateY(-2px);
 }
 
 .profileDetails {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-  margin-top: 1.5rem;
-}
-
-.profileDetail {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #718096;
-}
-
-.detailIcon {
-  color: #2575fc;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	gap: 1.5rem;
 }
 
 .profileSection {
-  background-color: #f7f9fc;
-  border-radius: 12px;
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
+	background-color: #fff;
+	padding: 1.5rem;
+	border-radius: 10px;
+	box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+	transition: all 0.3s ease;
 }
 
-.sectionTitle {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #2d3748;
-  margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+.profileSection:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
-.lookingForAJob {
-  padding: 0.5rem 0;
+.profileSection h2 {
+	font-size: 1.5rem;
+	margin-top: 0;
+	margin-bottom: 1rem;
+	color: #4a76a8;
+	position: relative;
 }
 
-.jobStatus {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+.profileSection h2::after {
+	content: '';
+	position: absolute;
+	bottom: -5px;
+	left: 0;
+	width: 40px;
+	height: 2px;
+	background-color: #4a76a8;
+	transition: width 0.3s ease;
 }
 
-.available {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-  color: white;
-  border-radius: 50px;
-  font-size: 0.875rem;
-  font-weight: 500;
+.profileSection:hover h2::after {
+	width: 60px;
 }
 
-.notAvailable {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  background-color: #e2e8f0;
-  color: #4a5568;
-  border-radius: 50px;
-  font-size: 0.875rem;
-  font-weight: 500;
+.contactsList {
+	list-style: none;
+	padding: 0;
+	margin: 0;
 }
 
-.socialLinks {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
+.contactItem {
+	margin-bottom: 0.5rem;
 }
 
-.socialLink {
-  display: inline-block;
-  padding: 0.5rem 1rem;
-  background-color: white;
-  color: #4a5568;
-  text-decoration: none;
-  border-radius: 8px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  text-transform: capitalize;
+.contactItem a {
+	color: #4a76a8;
+	text-decoration: none;
+	transition: all 0.3s ease;
 }
 
-.socialLink:hover {
-  background-color: #2575fc;
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(37, 117, 252, 0.3);
+.contactItem a:hover {
+	color: #2a5885;
+	text-decoration: underline;
 }
 
-.loaderContainer {
-  padding: 2rem;
+.loading,
+.error,
+.notFound {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 300px;
+	font-size: 1.2rem;
+	text-align: center;
 }
 
-.errorMessage {
-  padding: 1.5rem;
-  margin: 2rem;
-  border-radius: 8px;
-  background-color: #fff5f5;
-  border-left: 4px solid #f56565;
-  color: #c53030;
-  font-size: 1rem;
-  animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
-}
-
-@keyframes shake {
-  10%, 90% { transform: translateX(-1px); }
-  20%, 80% { transform: translateX(2px); }
-  30%, 50%, 70% { transform: translateX(-4px); }
-  40%, 60% { transform: translateX(4px); }
-}
-
-@media (max-width: 768px) {
-  .profileAvatarContainer {
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-  }
-  
-  .profileAvatar {
-    width: 120px;
-    height: 120px;
-  }
-  
-  .profileName {
-    font-size: 1.5rem;
-    text-align: center;
-  }
-  
-  .profileDetails {
-    justify-content: center;
-  }
+.loading {
+	color: #666;
+	animation: pulse 1.2s;
 }

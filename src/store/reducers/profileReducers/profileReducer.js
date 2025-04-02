@@ -3,6 +3,8 @@ import {
 	SET_PROFILE_LOADING,
 	SET_PROFILE_ERROR,
 	SET_USER_STATUS,
+	UPDATE_USER_PROFILE,
+	UPDATE_PROFILE_PHOTO,
 } from './profileAction';
 import { initialState } from './profileState';
 
@@ -29,6 +31,24 @@ const profileReducer = (state = initialState, action) => {
 			return {
 				...state,
 				status: action.payload,
+			};
+		case UPDATE_USER_PROFILE:
+			return {
+				...state,
+				profile: {
+					...state.profile,
+					...action.payload,
+				},
+				error: null,
+			};
+		case UPDATE_PROFILE_PHOTO:
+			return {
+				...state,
+				profile: {
+					...state.profile,
+					photos: action.payload,
+				},
+				error: null,
 			};
 		default:
 			return state;

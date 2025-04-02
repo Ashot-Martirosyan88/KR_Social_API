@@ -1,5 +1,5 @@
 .navbar {
-  background-color: #fff;
+  background-color: #4a76a8;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
@@ -10,25 +10,22 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 1rem;
+  padding: 0.75rem 1rem;
 }
 
 .logo {
+  color: #fff;
   font-size: 1.5rem;
   font-weight: 700;
-  color: #2575fc;
   text-decoration: none;
-  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  transition: opacity 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .logo:hover {
-  opacity: 0.8;
+  transform: scale(1.05);
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
 }
 
 .navLinks {
@@ -41,26 +38,99 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #4a5568;
+  color: #fff;
   text-decoration: none;
   font-weight: 500;
-  font-size: 0.95rem;
   padding: 0.5rem;
-  border-radius: 0.5rem;
+  border-radius: 5px;
   transition: all 0.3s ease;
+  position: relative;
 }
 
 .navButton {
   background: none;
   border: none;
   cursor: pointer;
+  font-size: 1rem;
 }
 
 .navLink:hover, .navButton:hover {
-  color: #2575fc;
-  background-color: rgba(37, 117, 252, 0.1);
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.navLink::after, .navButton::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background-color: #fff;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.navLink:hover::after, .navButton:hover::after {
+  width: 80%;
 }
 
 .icon {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
+}
+
+.userAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #fff;
+  transition: all 0.3s ease;
+}
+
+.userAvatar:hover {
+  transform: scale(1.1);
+  border-color: #9ec3ff;
+}
+
+.userAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0.5rem 1rem;
+  }
+  
+  .logo {
+    font-size: 1.3rem;
+  }
+  
+  .navLink span, .navButton span {
+    display: none;
+  }
+  
+  .navLinks {
+    gap: 1rem;
+  }
+  
+  .icon {
+    font-size: 1.4rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0.5rem;
+  }
+  
+  .logo {
+    font-size: 1.2rem;
+  }
+  
+  .navLinks {
+    gap: 0.75rem;
+  }
 }

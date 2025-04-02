@@ -2,10 +2,7 @@ import axios from 'axios';
 
 const instance = axios.create({
 	baseURL: 'https://social-network.samuraijs.com/api/1.0',
-	withCredentials: true, // Add credentials for authentication cookies
-	// headers: {
-	// 	'API-KEY': 'your-api-key-here', // Replace with your actual API key from the social network
-	// },
+	withCredentials: true,
 });
 
 const API = {
@@ -18,8 +15,13 @@ const API = {
 	me: () => {
 		return instance.get('/auth/me');
 	},
-	login: (email, password, rememberMe = false) => {
-		return instance.post('/auth/login', { email, password, rememberMe });
+	login: (email, password, rememberMe = false, captcha = null) => {
+		return instance.post('/auth/login', {
+			email,
+			password,
+			rememberMe,
+			captcha,
+		});
 	},
 	logout: () => {
 		return instance.delete('/auth/login');
@@ -38,6 +40,7 @@ const API = {
 	updateUserPhoto: photoFile => {
 		const formData = new FormData();
 		formData.append('image', photoFile);
+
 		return instance.put('/profile/photo', formData, {
 			headers: {
 				'Content-Type': 'multipart/form-data',

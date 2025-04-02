@@ -1,23 +1,15 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import { FaUser, FaLock, FaSignInAlt } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import { loginTC } from '../../store/reducers/authReducers/authThunk';
 import styles from './Login.module.css';
 
-const LoginSchema = Yup.object().shape({
-	email: Yup.string()
-		.email('Invalid email address')
-		.required('Email is required'),
-	password: Yup.string()
-		.min(4, 'Password must be at least 4 characters')
-		.required('Password is required'),
-	rememberMe: Yup.boolean(),
-});
-
 const Login = () => {
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
+	const [rememberMe, setRememberMe] = useState(false);
+	const [formErrors, setFormErrors] = useState({});
+
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const { isAuthenticated, isLoading, error } = useSelector(
@@ -30,101 +22,94 @@ const Login = () => {
 		}
 	}, [isAuthenticated, navigate]);
 
-	const handleSubmit = (values, { setSubmitting }) => {
-		dispatch(loginTC(values.email, values.password, values.rememberMe));
-		setSubmitting(false);
+	const validateForm = () => {
+		const errors = {};
+
+		if (!email.trim()) {
+			errors.email = 'Email is required';
+		} else if (!/\S+@\S+\.\S+/.test(email)) {
+			errors.email = 'Email is invalid';
+		}
+
+		if (!password) {
+			errors.password = 'Password is required';
+		} else if (password.length < 6) {
+			errors.password = 'Password must be at least 6 characters';
+		}
+
+		setFormErrors(errors);
+		return Object.keys(errors).length === 0;
+	};
+
+	const handleSubmit = e => {
+		e.preventDefault();
+
+		if (validateForm()) {
+			dispatch(loginTC(email, password, rememberMe));
+		}
 	};
 
 	return (
 		<div className={styles.loginContainer}>
-			<div className={styles.loginCard}>
-				<div className={styles.loginHeader}>
-					<h1>Welcome Back</h1>
-					<p>Please sign in to your account</p>
-				</div>
+			<div className={styles.loginForm}>
+				<h1 className={styles.loginTitle}>Login</h1>
 
 				{error && <div className={styles.errorMessage}>{error}</div>}
 
-				<Formik
-					initialValues={{ email: '', password: '', rememberMe: false }}
-					validationSchema={LoginSchema}
-					onSubmit={handleSubmit}
-				>
-					{({ isSubmitting, touched, errors }) => (
-						<Form className={styles.form}>
-							<div className={styles.formGroup}>
-								<label htmlFor='email' className={styles.label}>
-									<FaUser className={styles.labelIcon} />
-									Email
-								</label>
-								<Field
-									type='email'
-									name='email'
-									id='email'
-									className={`${styles.input} ${
-										touched.email && errors.email ? styles.inputError : ''
-									}`}
-									placeholder='Enter your email'
-								/>
-								<ErrorMessage
-									name='email'
-									component='div'
-									className={styles.error}
-								/>
-							</div>
+				<form onSubmit={handleSubmit}>
+					<div className={styles.formGroup}>
+						<label htmlFor='email'>Email</label>
+						<input
+							type='email'
+							id='email'
+							value={email}
+							onChange={e => setEmail(e.target.value)}
+							className={formErrors.email ? styles.inputError : ''}
+						/>
+						{formErrors.email && (
+							<p className={styles.errorText}>{formErrors.email}</p>
+						)}
+					</div>
 
-							<div className={styles.formGroup}>
-								<label htmlFor='password' className={styles.label}>
-									<FaLock className={styles.labelIcon} />
-									Password
-								</label>
-								<Field
-									type='password'
-									name='password'
-									id='password'
-									className={`${styles.input} ${
-										touched.password && errors.password ? styles.inputError : ''
-									}`}
-									placeholder='Enter your password'
-								/>
-								<ErrorMessage
-									name='password'
-									component='div'
-									className={styles.error}
-								/>
-							</div>
+					<div className={styles.formGroup}>
+						<label htmlFor='password'>Password</label>
+						<input
+							type='password'
+							id='password'
+							value={password}
+							onChange={e => setPassword(e.target.value)}
+							className={formErrors.password ? styles.inputError : ''}
+						/>
+						{formErrors.password && (
+							<p className={styles.errorText}>{formErrors.password}</p>
+						)}
+					</div>
 
-							<div className={styles.checkboxGroup}>
-								<label className={styles.checkboxLabel}>
-									<Field
-										type='checkbox'
-										name='rememberMe'
-										className={styles.checkbox}
-									/>
-									<span>Remember me</span>
-								</label>
-								<a href='#' className={styles.forgotPassword}>
-									Forgot password?
-								</a>
-							</div>
+					<div className={styles.formGroup}>
+						<label className={styles.checkboxLabel}>
+							<input
+								type='checkbox'
+								checked={rememberMe}
+								onChange={() => setRememberMe(!rememberMe)}
+							/>
+							Remember me
+						</label>
+					</div>
 
-							<button
-								type='submit'
-								className={styles.submitButton}
-								disabled={isSubmitting || isLoading}
-							>
-								{isLoading ? (
-									<span className={styles.loading}></span>
-								) : (
-									<>
-										<FaSignInAlt className={styles.buttonIcon} />
-										Sign In
-									</>
-								)}
-							</button>
-						</Form>
-					)}
-				</Formik>
+					<button
+						type='submit'
+						className={styles.loginButton}
+						disabled={isLoading}
+					>
+						{isLoading ? 'Logging in...' : 'Login'}
+					</button>
+				</form>
+
+				<div className={styles.loginInfo}>
+					<p>For demo access, use:</p>
+					<p>Email: free@samuraijs.com</p>
+					<p>Password: free</p>
+				</div>
 			</div>
 		</div>
 	);

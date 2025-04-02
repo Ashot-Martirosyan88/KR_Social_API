@@ -3,6 +3,8 @@ import {
 	SET_PROFILE_LOADING,
 	SET_PROFILE_ERROR,
 	SET_USER_STATUS,
+	UPDATE_USER_PROFILE,
+	UPDATE_PROFILE_PHOTO,
 } from './profileAction';
 
 export const setUserProfileAC = profile => ({
@@ -23,4 +25,14 @@ export const setProfileErrorAC = error => ({
 export const setUserStatusAC = status => ({
 	type: SET_USER_STATUS,
 	payload: status,
+});
+
+export const updateUserProfileAC = profile => ({
+	type: UPDATE_USER_PROFILE,
+	payload: profile,
+});
+
+export const updateProfilePhotoAC = photos => ({
+	type: UPDATE_PROFILE_PHOTO,
+	payload: photos,
 });
